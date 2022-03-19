@@ -1,31 +1,40 @@
 <%- include("partials/header") %>
 
-<div class="note adjust">
-  <img class="article-profile" src="https://png.pngtree.com/png-vector/20190223/ourmid/pngtree-profile-line-black-icon-png-image_691065.jpg" alt="">
-  <a class="profile-text-title" href="#">User7702</a>
-  <button class="favourite" type="submit" name="button"><i class="far fa-heart"></i> Like</button>
-  <p style="margin-bottom:7px">3/14/2022</p>
-  <h3 class="title">Title</h3>
-  <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum. </p>
-</div>
+<h1 class="feed-header">Global Feed</h1>
 
-<div class="note">
-  <img class="article-profile" src="https://png.pngtree.com/png-vector/20190223/ourmid/pngtree-profile-line-black-icon-png-image_691065.jpg" alt="">
-  <a class="profile-text-title" href="#">User7702</a>
-  <button class="favourite" type="submit" name="button"><i class="far fa-heart"></i> Like</button>
-  <p style="margin-bottom:7px">3/14/2022</p>
-  <h3 class="title">Title</h3>
-  <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum. </p>
-</div>
+<% posts.forEach(function(post){ %>
+  <% users.forEach(function(user){ %>
+    <%  if(user.username === post.author){ %>
+      <div class="note">
+        <img class="article-profile" src="<%= user.imageURL %>" alt="">
+        <a class="profile-text-title" href="/userprofile/<%= post.author %>"><%=user.username%></a>
 
-<div class="note">
-  <img class="article-profile" src="https://png.pngtree.com/png-vector/20190223/ourmid/pngtree-profile-line-black-icon-png-image_691065.jpg" alt="">
-  <a class="profile-text-title" href="#">User7702</a>
-  <button class="favourite" type="submit" name="button"><i class="far fa-heart"></i> Like</button>
-  <p style="margin-bottom:7px">3/14/2022</p>
-  <h3 class="title">Title</h3>
-  <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum. </p>
-</div>
+        <form class="" action="/like" method="post">
+          <input type="text" name="like" style="display:none;" value="<%=post._id%>">
+          <input type="text" name="route" style="display:none;" value="explore">
+
+        <%  if(post.likedUsers.length !=0){ %>
+        <%  for(let i=0; i<post.likedUsers.length; i++){ %>
+        <%    if(post.likedUsers[i].username === selfuser){ %>
+               <button class="favourite like-button active" type="submit" name=<%= post._id %>><i class="fas fa-heart" name="<%= post._id %>"></i> <%= post.likedUsers.length %></button>
+        <%      break; %>
+        <%    }else if(i === post.likedUsers.length-1){ %>
+              <button class="favourite like-button" type="submit" name=<%= post._id %>><i class="far fa-heart" name="<%= post._id %>"></i> <%= post.likedUsers.length %></button>
+        <%    }  %>
+        <%  }   %>
+      <%    }else{ %>
+            <button class="favourite like-button" type="submit" name=<%= post._id %>><i class="far fa-heart" name="<%= post._id %>"></i> <%= post.likedUsers.length %></button>
+      <%    }  %>
+
+        </form>
+
+        <p style="margin-bottom:7px"><%= post.dateCreated %></p>
+        <h3 class="title"><%= post.title %></h3>
+        <p><%= post.content %> </p>
+      </div>
+      <%  }                                    %>
+    <% }); %>
+<%   });    %>
 
 
 <%- include("partials/footer") %>

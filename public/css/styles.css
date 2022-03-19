@@ -13,6 +13,16 @@
 .space{
   margin-bottom: 34px;
 }
+.no-link{
+  text-decoration: none;
+  color: black;
+}
+.no-link:hover{
+  color: black;
+}
+.feed-header{
+  text-align: center;
+}
 .note {
   background: #fff;
   border-radius: 7px;
@@ -44,12 +54,16 @@
   padding: 20px 20% 20px 20%;
 }
 .profile-image{
-  width: 80px;
-  height: auto;
+  width: 100px;
+  height: 100px;
+  /* height: auto; */
   border-radius: 50%;
 }
 .profile-setting{
   margin-left: 70%;
+}
+.active{
+  color: red;
 }
 .user-body{
   padding-left: 25%;
@@ -65,11 +79,7 @@
 .post-content{
   padding: 25px 20% 25px 20%;
 }
-/* .post-author{
-  margin-right: 300px;
-  background-color: red;
-  display: inline-block;
-} */
+
 .profile-text-title{
   color: black;
   text-decoration: none;
