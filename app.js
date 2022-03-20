@@ -63,6 +63,17 @@ passport.deserializeUser(function(id, done) {
   });
 });
 
+// function findoneUser(userkey){
+//   return Userinfo.findOne({username: userkey}).exec().then(result => {console.log(result);}).then(user => {return user;});
+// }
+
+async function findoneUser(userkey){
+  try{
+     return await Userinfo.findOne({username: userkey}).exec().then(result => {return result});
+  }catch(err){
+    console.log(err);
+  }
+}
 
 app.get("/", function(req, res){
   res.render("login",{Username: "User Name", Password: "Password"});
@@ -124,12 +135,24 @@ app.post("/like", function(req, res){
           if(foundPost.likedUsers[i].username === req.user.username){
             foundPost.likedUsers.splice(i,1);
             foundPost.save();
+            Userinfo.findOne({username: req.user.username}, function(err, foundUser){
+              if(!err){
+                foundUser.likedArticles.splice(i,1);
+                foundUser.save();
+              }
+            });
             break;
           }else if(i === foundPost.likedUsers.length-1){
             Userinfo.findOne({username: req.user.username}, function(err, foundUser){
               if(!err){
                 foundPost.likedUsers.push(foundUser);
                 foundPost.save();
+              }
+            });
+            Userinfo.findOne({username: req.user.username}, function(err, foundUser){
+              if(!err){
+                foundUser.likedArticles.push(foundPost);
+                foundUser.save();
               }
             });
           }
@@ -141,15 +164,62 @@ app.post("/like", function(req, res){
             foundPost.save();
           }
         });
+        Userinfo.findOne({username: req.user.username}, function(err, foundUser){
+          if(!err){
+            foundUser.likedArticles.push(foundPost);
+            foundUser.save();
+          }
+        });
        }
     }
   });
   res.redirect("/"+ req.body.route);
 });
 
+app.get("/follow/:user", function(req, res){
+  Userinfo.findOne({username: req.user.username}, function(err, currentUser){
+    if(!err){
+      if(currentUser.following.length !=0){
+        for(let i=0; i<currentUser.following.length; i++){
+          if(currentUser.following[i].username === req.params.user){
+            currentUser.following.splice(i,1);
+            currentUser.save();
+            break;
+          }else if(i === currentUser.following.length-1){
+            Userinfo.findOne({username: req.params.user}, function(err, foundUser){
+              if(!err){
+                currentUser.following.push(foundUser);
+                currentUser.save();
+              }
+            });
+          }
+        }
+      }else {
+        Userinfo.findOne({username: req.params.user}, function(err, foundUser){
+          if(!err){
+            currentUser.following.push(foundUser);
+            currentUser.save();
+          }
+        });
+      }
+    }
+  });
+  res.redirect("/userprofile/"+req.params.user);
+});
+
 app.get("/home", function(req, res){
   if(req.isAuthenticated()){
-    res.render("home");
+    console.log(findoneUser("saphal7702"));
+    Userinfo.findOne({username: req.user.username}, function(err, foundUser){
+      if(!err){
+        Post.find({}, function(err, foundPosts){
+          if(!err){
+            res.render("home",{users: foundUser.following, posts: foundPosts, selfuser: req.user.username});
+          }
+        });
+      }
+    });
+
   }else{
     res.redirect("/");
   }
@@ -206,33 +276,51 @@ app.post("/compose", function(req, res){
   res.redirect("/compose");
 });
 
-app.get("/posts", function(req,res){
-  res.render("posts");
+app.get("/readmore/:postID", function(req,res){
+  Post.findOne({_id: req.params.postID}, function(err, foundPost){
+    Userinfo.findOne({username: foundPost.author}, function(err, foundUser){
+    if(!err){
+      res.render("posts",{author: foundUser, post: foundPost});
+    }
+    });
+  });
 });
 
 app.get("/userprofile/:username", function(req, res){
   if(req.user.username === req.params.username){
     res.redirect("/profile");
   }else{
-    console.log(req.params.username);
     Userinfo.findOne({username: req.params.username}, function(err, foundUser){
-      if(!err){
-        Post.find({author: req.params.username}, function(err, foundPosts){
+      Userinfo.findOne({username: req.user.username}, function(err, currentUser){
+        if(!err){
           if(!err){
-            res.render("profile",{user: foundUser, posts: foundPosts});
+            var follow = "";
+            if(currentUser.following.length !=0){
+              for(let i=0; i< currentUser.following.length;i++){
+                if(currentUser.following[i].username === foundUser.username){
+                  follow ="+ Unfollow Author";
+                  break;
+                }else if(i === currentUser.following.length-1){
+                  follow="+ Follow Author";
+                }
+              }
+            }else{
+              follow="+ Follow Author"
+            }
+            Post.find({author: req.params.username}, function(err, foundPosts){
+              if(!err){
+                res.render("userprofile",{user: foundUser, posts: foundPosts, selfuser: req.user.username, followstat: follow});
+              }
+            });
           }
-        });
-      }
+        }
+      });
     });
   }
 });
 
-app.post("/userprofile", function(req, res){
-  if(req.user.username === req.body.userlink){
-    res.redirect("/profile");
-  }else{
-    res.redirect("/userprofile");
-  }
+app.get("/readmore", function(req, res){
+  res.render("posts");
 });
 
 app.get("/profile", function(req, res){
@@ -244,6 +332,16 @@ app.get("/profile", function(req, res){
         }
       });
     }
+  });
+});
+
+app.get("/likedarticles", function(req, res){
+  Userinfo.findOne({username: req.user.username}, function(err, foundUser){
+    Userinfo.find({}, function(err, foundUsers){
+      if(!err){
+        res.render("likedarticles",{user: foundUser, posts: foundUser.likedArticles, users: foundUsers});
+      }
+    });
   });
 });
 

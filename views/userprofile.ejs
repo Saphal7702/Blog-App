@@ -4,51 +4,46 @@
     <img class="profile-image" src="<%= user.imageURL %>" alt="">
     <h1><%= user.username %></h1>
     <p><%= user.bio %></p>
-    <button type="button" class="btn btn-outline-secondary profile-setting"><a class="no-link" href="/settings">Profile Setting</a></button>
+    <button type="button" class="btn btn-outline-secondary profile-setting"><a class="no-link" href="/follow/<%=user.username%>"><%= followstat %></a></button>
 </div>
 
 <div class="user-body">
-  <ul class="nav nav-pills">
-<li class="nav-item">
-<a class="nav-link" href="#">My Articles</a>
-</li>
-<li class="nav-item">
-<a class="nav-link" href="#">Liked Articles</a>
-</li>
-</ul>
+<h2>My Articles</h2>
 </div>
 
   <% posts.forEach(function(post){ %>
-    <%  if(user.username === post.author){ %>
       <div class="note">
         <img class="article-profile" src="<%= user.imageURL %>" alt="">
         <a class="profile-text-title" href="/userprofile/<%= post.author %>"><%=user.username%></a>
 
         <form class="" action="/like" method="post">
           <input type="text" name="like" style="display:none;" value="<%=post._id%>">
-          <input type="text" name="route" style="display:none;" value="explore">
+          <input type="text" name="route" style="display:none;" value="userprofile/<%=user.username%>">
 
         <%  if(post.likedUsers.length !=0){ %>
         <%  for(let i=0; i<post.likedUsers.length; i++){ %>
-        <%    if(post.likedUsers[i].username === user.username){ %>
-               <button class="favourite like-button active" type="submit" name=<%= post._id %>><i class="fas fa-heart" name="<%= post._id %>"></i> <%= post.likedUsers.length %></button>
+        <%    if(post.likedUsers[i].username === selfuser){ %>
+               <button class="btn btn-outline-danger author-button favourite like-button active" type="submit" name=<%= post._id %>><i class="fas fa-heart" name="<%= post._id %>"></i> <%= post.likedUsers.length %></button>
         <%      break; %>
         <%    }else if(i === post.likedUsers.length-1){ %>
-              <button class="favourite like-button" type="submit" name=<%= post._id %>><i class="far fa-heart" name="<%= post._id %>"></i> <%= post.likedUsers.length %></button>
+              <button class="btn btn-outline-danger author-button favourite like-button" type="submit" name=<%= post._id %>><i class="far fa-heart" name="<%= post._id %>"></i> <%= post.likedUsers.length %></button>
         <%    }  %>
         <%  }   %>
       <%    }else{ %>
-            <button class="favourite like-button" type="submit" name=<%= post._id %>><i class="far fa-heart" name="<%= post._id %>"></i> <%= post.likedUsers.length %></button>
+            <button class="btn btn-outline-danger author-button favourite like-button" type="submit" name=<%= post._id %>><i class="far fa-heart" name="<%= post._id %>"></i> <%= post.likedUsers.length %></button>
       <%    }  %>
 
         </form>
 
         <p style="margin-bottom:7px"><%= post.dateCreated %></p>
         <h3 class="title"><%= post.title %></h3>
-        <p><%= post.content %> </p>
+        <p><%= post.content.substr(0,300)+"..." %> </p>
+        <a href="/readmore/<%=post._id%>">Read More</a>
       </div>
-      <%  }                                    %>
     <% }); %>
 
 
-<%- include("partials/footer") %>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <!-- <script src="index.js" charset="utf-8"></script> -->
+    </body>
+    </html>

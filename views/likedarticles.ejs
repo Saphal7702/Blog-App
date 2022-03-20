@@ -1,0 +1,50 @@
+<%- include("partials/header") %>
+
+<div class="user-profile">
+    <img class="profile-image" src="<%= user.imageURL %>" alt="">
+    <h1><%= user.username %></h1>
+    <p><%= user.bio %></p>
+    <button type="button" class="btn btn-outline-secondary profile-setting"><a class="no-link" href="/settings">Profile Setting</a></button>
+</div>
+
+<div class="user-body">
+  <ul class="nav nav-pills">
+<li class="nav-item">
+<a class="nav-link" href="/profile">My Articles</a>
+</li>
+<li class="nav-item">
+<a class="nav-link" href="/likedarticles">Liked Articles</a>
+</li>
+</ul>
+</div>
+
+  <% posts.forEach(function(post){ %>
+    <% users.forEach(function(userr){ %>
+      <%  if(userr.username === post.author){ %>
+      <div class="note">
+        <img class="article-profile" src="<%= userr.imageURL %>" alt="">
+        <a class="profile-text-title" href="/userprofile/<%= post.author %>"><%=post.author%></a>
+
+        <form class="" action="/like" method="post">
+          <input type="text" name="like" style="display:none;" value="<%=post._id%>">
+          <input type="text" name="route" style="display:none;" value="likedarticles">
+
+          <button class="btn btn-outline-danger author-button favourite like-button active" type="submit" name=<%= post._id %>><i class="fas fa-heart" name="<%= post._id %>"></i> <%= post.likedUsers.length %></button>
+
+        </form>
+
+        <p style="margin-bottom:7px"><%= post.dateCreated %></p>
+        <h3 class="title"><%= post.title %></h3>
+        <p><%= post.content.substr(0,300)+"..." %> </p>
+        <a href="/readmore/<%=post._id%>">Read More</a>
+      </div>
+      <%  }                                    %>
+
+      <% }); %>
+    <% }); %>
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <!-- <script src="index.js" charset="utf-8"></script> -->
+    </body>
+    </html>

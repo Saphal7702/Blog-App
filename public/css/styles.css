@@ -7,9 +7,9 @@
 .favourite{
   float: right;
 }
-.favourite:hover{
+/* .favourite:hover{
   color: red;
-}
+} */
 .space{
   margin-bottom: 34px;
 }

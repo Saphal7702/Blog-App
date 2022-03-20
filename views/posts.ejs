@@ -1,23 +1,22 @@
 <%- include("partials/header") %>
 
 <div class="post-profile">
-  <h1>Content Title</h1>
+  <h1><%=post.title %></h1>
   <div class="">
-    <img class="article-profile" src="https://png.pngtree.com/png-vector/20190223/ourmid/pngtree-profile-line-black-icon-png-image_691065.jpg" alt="">
-    <a class="profile-text-title" href="#">User7702</a>
-    <!-- <div class="post-author">
-      <a class="profile-text-title" href="#">Test</a>
-      <p class="profile-text">Test</p>
-    </div> -->
+    <img class="article-profile" src="<%= author.imageURL %>" alt="">
+    <a class="profile-text-title" href="/userprofile/<%=author.username%>"><%=author.username%></a>
     <button type="button" class="btn btn-outline-secondary author-button">+ Follow Author</button>
     <button type="button" class="btn btn-outline-danger author-button">🤍 Like article</button>
   </div>
 </div>
 
 <div class="post-content">
-  <p>3/14/2022</p>
-  <p>Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of "de Finibus Bonorum et Malorum" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, "Lorem ipsum dolor sit amet..", comes from a line in section 1.10.32. The standard chunk of Lorem Ipsum used since the 1500s is reproduced below for those interested. Sections 1.10.32 and 1.10.33 from "de Finibus Bonorum et Malorum" by Cicero are also reproduced in their exact original form, accompanied by English versions from the 1914 translation by H. Rackham.</p>
+  <p><%=post.dateCreated%></p>
+  <p><%=post.content %></p>
   <hr>
 </div>
 
-<%- include("partials/footer") %>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- <script src="index.js" charset="utf-8"></script> -->
+</body>
+</html>
