@@ -4,7 +4,7 @@
     <img class="profile-image" src="<%= user.imageURL %>" alt="">
     <h1><%= user.username %></h1>
     <p><%= user.bio %></p>
-    <button type="button" class="btn btn-outline-secondary profile-setting"><a class="no-link" href="/follow/<%=user.username%>"><%= followstat %></a></button>
+    <a href="/follow/<%=user.username%>" class="btn btn-outline-secondary profile-setting"><%= followstat %></a>
 </div>
 
 <div class="user-body">

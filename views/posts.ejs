@@ -5,8 +5,10 @@
   <div class="">
     <img class="article-profile" src="<%= author.imageURL %>" alt="">
     <a class="profile-text-title" href="/userprofile/<%=author.username%>"><%=author.username%></a>
-    <button type="button" class="btn btn-outline-secondary author-button">+ Follow Author</button>
-    <button type="button" class="btn btn-outline-danger author-button">🤍 Like article</button>
+    <% if(currentuser === author.username){ %>
+      <a href="/editArticle/<%=post._id%>" class="btn btn-outline-secondary">📝 Edit Article</a>
+      <a href="/deleteArticle/<%=post._id%>" class="btn btn-outline-danger">Delete Article</a>
+    <%  }      %>
   </div>
 </div>
 

@@ -19,28 +19,34 @@
 </div>
 
   <% posts.forEach(function(post){ %>
-    <% users.forEach(function(userr){ %>
-      <%  if(userr.username === post.author){ %>
-      <div class="note">
-        <img class="article-profile" src="<%= userr.imageURL %>" alt="">
-        <a class="profile-text-title" href="/userprofile/<%= post.author %>"><%=post.author%></a>
+    <% post.likedUsers.forEach(function(likeduser){ %>
+      <% if(likeduser.username === user.username){ %>
+        <% users.forEach(function(userr){ %>
+          <%  if(userr.username === post.author){ %>
+          <div class="note">
+            <img class="article-profile" src="<%= userr.imageURL %>" alt="">
+            <a class="profile-text-title" href="/userprofile/<%= post.author %>"><%=post.author%></a>
 
-        <form class="" action="/like" method="post">
-          <input type="text" name="like" style="display:none;" value="<%=post._id%>">
-          <input type="text" name="route" style="display:none;" value="likedarticles">
+            <form class="" action="/like" method="post">
+              <input type="text" name="like" style="display:none;" value="<%=post._id%>">
+              <input type="text" name="route" style="display:none;" value="likedarticles">
 
-          <button class="btn btn-outline-danger author-button favourite like-button active" type="submit" name=<%= post._id %>><i class="fas fa-heart" name="<%= post._id %>"></i> <%= post.likedUsers.length %></button>
+              <button class="btn btn-outline-danger author-button favourite like-button active" type="submit" name=<%= post._id %>><i class="fas fa-heart" name="<%= post._id %>"></i> <%= post.likedUsers.length %></button>
 
-        </form>
+            </form>
 
-        <p style="margin-bottom:7px"><%= post.dateCreated %></p>
-        <h3 class="title"><%= post.title %></h3>
-        <p><%= post.content.substr(0,300)+"..." %> </p>
-        <a href="/readmore/<%=post._id%>">Read More</a>
-      </div>
-      <%  }                                    %>
+            <p style="margin-bottom:7px"><%= post.dateCreated %></p>
+            <h3 class="title"><%= post.title %></h3>
+            <p><%= post.content.substr(0,300)+"..." %> </p>
+            <a href="/readmore/<%=post._id%>">Read More</a>
+          </div>
+          <%  }                                    %>
 
-      <% }); %>
+          <% }); %>
+    <%  } %>
+  <%  }); %>
+
+
     <% }); %>
 
 

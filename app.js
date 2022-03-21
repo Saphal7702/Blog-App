@@ -64,16 +64,13 @@ passport.deserializeUser(function(id, done) {
 });
 
 // function findoneUser(userkey){
-//   return Userinfo.findOne({username: userkey}).exec().then(result => {console.log(result);}).then(user => {return user;});
+//   return Userinfo.findOne({username: userkey}).exec().then(result => {let tem =result;}).then(user => {return user;});
 // }
 
-async function findoneUser(userkey){
-  try{
-     return await Userinfo.findOne({username: userkey}).exec().then(result => {return result});
-  }catch(err){
-    console.log(err);
-  }
+function findallUser(){
+  return Userinfo.find({}).exec().then(result => {console.log(result);}).then(user => {return user;});
 }
+
 
 app.get("/", function(req, res){
   res.render("login",{Username: "User Name", Password: "Password"});
@@ -135,24 +132,12 @@ app.post("/like", function(req, res){
           if(foundPost.likedUsers[i].username === req.user.username){
             foundPost.likedUsers.splice(i,1);
             foundPost.save();
-            Userinfo.findOne({username: req.user.username}, function(err, foundUser){
-              if(!err){
-                foundUser.likedArticles.splice(i,1);
-                foundUser.save();
-              }
-            });
             break;
           }else if(i === foundPost.likedUsers.length-1){
             Userinfo.findOne({username: req.user.username}, function(err, foundUser){
               if(!err){
                 foundPost.likedUsers.push(foundUser);
                 foundPost.save();
-              }
-            });
-            Userinfo.findOne({username: req.user.username}, function(err, foundUser){
-              if(!err){
-                foundUser.likedArticles.push(foundPost);
-                foundUser.save();
               }
             });
           }
@@ -162,12 +147,6 @@ app.post("/like", function(req, res){
           if(!err){
             foundPost.likedUsers.push(foundUser);
             foundPost.save();
-          }
-        });
-        Userinfo.findOne({username: req.user.username}, function(err, foundUser){
-          if(!err){
-            foundUser.likedArticles.push(foundPost);
-            foundUser.save();
           }
         });
        }
@@ -209,7 +188,8 @@ app.get("/follow/:user", function(req, res){
 
 app.get("/home", function(req, res){
   if(req.isAuthenticated()){
-    console.log(findoneUser("saphal7702"));
+    // console.log(findoneUser("saphal7702"));
+    // console.log(findallUser());
     Userinfo.findOne({username: req.user.username}, function(err, foundUser){
       if(!err){
         Post.find({}, function(err, foundPosts){
@@ -276,11 +256,39 @@ app.post("/compose", function(req, res){
   res.redirect("/compose");
 });
 
+app.get("/editArticle/:postID", function(req, res){
+  Post.findOne({_id: req.params.postID}, function(err, foundPost){
+    res.render("edit",{post: foundPost});
+  });
+});
+
+app.post("/editArticle/:postID", function(req, res){
+  Post.findOne({_id: req.params.postID}, function(err, foundPost){
+    foundPost.title = req.body.title;
+    foundPost.content = req.body.content;
+    foundPost.tag = req.body.tag;
+    foundPost.save();
+    Userinfo.findOne({username: foundPost.author}, function(err, foundUser){
+    if(!err){
+      res.render("posts",{author: foundUser, post: foundPost, currentuser: req.user.username});
+    }
+  });
+});
+});
+
+app.get("/deleteArticle/:postID", function(req, res){
+  Post.deleteOne({_id: req.params.postID}, function(err){
+    if(!err){
+      res.redirect("/home");
+    }
+  });
+});
+
 app.get("/readmore/:postID", function(req,res){
   Post.findOne({_id: req.params.postID}, function(err, foundPost){
     Userinfo.findOne({username: foundPost.author}, function(err, foundUser){
     if(!err){
-      res.render("posts",{author: foundUser, post: foundPost});
+      res.render("posts",{author: foundUser, post: foundPost, currentuser: req.user.username});
     }
     });
   });
@@ -319,9 +327,6 @@ app.get("/userprofile/:username", function(req, res){
   }
 });
 
-app.get("/readmore", function(req, res){
-  res.render("posts");
-});
 
 app.get("/profile", function(req, res){
   Userinfo.findOne({username: req.user.username}, function(err, foundUser){
@@ -338,9 +343,11 @@ app.get("/profile", function(req, res){
 app.get("/likedarticles", function(req, res){
   Userinfo.findOne({username: req.user.username}, function(err, foundUser){
     Userinfo.find({}, function(err, foundUsers){
-      if(!err){
-        res.render("likedarticles",{user: foundUser, posts: foundUser.likedArticles, users: foundUsers});
-      }
+      Post.find({}, function(err, foundPosts){
+        if(!err){
+          res.render("likedarticles",{user: foundUser, posts: foundPosts, users: foundUsers});
+        }
+      });
     });
   });
 });
@@ -349,7 +356,7 @@ app.get("/settings", function(req, res){
   if(req.isAuthenticated()){
     Userinfo.findOne({username: req.user.username}, function(err, foundUser){
       if(!err){
-        res.render("settings",{imageURL: foundUser.imageURL, username: foundUser.username, email: foundUser.email});
+        res.render("settings",{imageURL: foundUser.imageURL, username: foundUser.username, email: foundUser.email, bio: foundUser.bio});
       }
     });
   }else{
