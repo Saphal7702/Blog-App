@@ -1,0 +1,105 @@
+<%- include("partials/header") %>
+
+<div class="user-profile">
+  <img class="profile-image" src="<%= user.imageURL %>" alt="">
+  <h1><%= user.username %></h1>
+  <p><%= user.bio %></p>
+  <a class="btn btn-outline-secondary profile-setting" onclick="followFunc(this)" name="<%=user.username %>"><%= followstat %></a>
+</div>
+
+<div class="user-body">
+  <h2>My Articles</h2>
+</div>
+
+<% posts.forEach(function(post){ %>
+<div class="note">
+  <img class="article-profile" src="<%= user.imageURL %>" alt="">
+  <a class="profile-text-title"><%=user.username%></a>
+  <%  if(post.likedUsers.length !=0){ %>
+  <%  for(let i=0; i<post.likedUsers.length; i++){ %>
+  <%    if(post.likedUsers[i].username === selfuser){ %>
+  <button class="btn btn-outline-danger author-button favourite like-button active" type="button" name=<%= post._id %>><i class="fas fa-heart" name="<%= post._id %>"> <%= post.likedUsers.length %></i></button>
+  <%      break; %>
+  <%    }else if(i === post.likedUsers.length-1){ %>
+  <button class="btn btn-outline-danger author-button favourite like-button" type="button" name=<%= post._id %>><i class="far fa-heart" name="<%= post._id %>"> <%= post.likedUsers.length %></i></button>
+  <%    }  %>
+  <%  }   %>
+  <%    }else{ %>
+  <button class="btn btn-outline-danger author-button favourite like-button" type="button" name=<%= post._id %>><i class="far fa-heart" name="<%= post._id %>"> <%= post.likedUsers.length %></i></button>
+  <%    }  %>
+  <p style="margin-bottom:7px"><%= post.dateCreated %></p>
+  <h3 class="title"><%= post.title %></h3>
+  <p><%= post.content.substr(0,300)+"..." %> </p>
+  <a href="/readmore/<%=post._id%>">Read More</a>
+</div>
+<% }); %>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script>
+  function like(key, count) {
+    console.log("Like");
+    $("button[name=" + key + "]").addClass("active");
+    $("i[name=" + key + "]")[0].classList.remove("far");
+    $("i[name=" + key + "]")[0].classList.add("fas");
+    $("i[name=" + key + "]")[0].innerHTML = " " + count;
+  }
+
+  function unlike(key, count) {
+    $("button[name=" + key + "]").removeClass("active");
+    $("i[name=" + key + "]")[0].classList.remove("fas");
+    $("i[name=" + key + "]")[0].classList.add("far");
+    $("i[name=" + key + "]")[0].innerHTML = " " + count;
+  }
+
+  for (let i = 0; i < $(".like-button").length; i++) {
+    $(".like-button")[i].addEventListener("click", function() {
+      var key = this.name;
+      $.ajax({
+        url: '/like',
+        type: 'POST',
+        dataType: "json",
+        data: {
+          content: key
+        },
+        success: function(data) {
+          if (data.message === "Like") {
+            like(key, data.count);
+          } else if (data.message === "Unlike") {
+            unlike(key, data.count);
+          } else {
+            $('div').html('Sorry, an error occured');
+          }
+        },
+        error: function() {
+          $('div').html('Sorry, an error occurred');
+        }
+      });
+    });
+  }
+
+  function followFunc(e) {
+    var key = e.name;
+    $.ajax({
+      url: "/follow",
+      type: 'POST',
+      dataType: "json",
+      data: {
+        content: key
+      },
+      success: function(data) {
+        if (data.message) {
+          e.innerHTML = data.message;
+        } else {
+          $('div').html('Sorry, an error occured');
+        }
+      },
+      error: function() {
+        $('div').html('Sorry, an error occurred');
+      }
+    });
+  }
+</script>
+</body>
+
+</html>

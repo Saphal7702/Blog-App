@@ -2,38 +2,30 @@
 
 <h1 class="feed-header">Following</h1>
 <% posts.forEach(function(post){ %>
-  <% users.forEach(function(user){ %>
-    <%  if(user.username === post.author){ %>
-      <div class="note">
-        <img class="article-profile" src="<%= user.imageURL %>" alt="">
-        <a class="profile-text-title" href="/userprofile/<%=post.author%>"><%=user.username%></a>
-
-        <form class="" action="/like" method="post">
-          <input type="text" name="like" style="display:none;" value="<%=post._id%>">
-          <input type="text" name="route" style="display:none;" value="home">
-
-        <%  if(post.likedUsers.length !=0){ %>
-        <%  for(let i=0; i<post.likedUsers.length; i++){ %>
-        <%    if(post.likedUsers[i].username === selfuser){ %>
-               <button class="btn btn-outline-danger author-button favourite like-button active" type="submit" name=<%= post._id %>><i class="fas fa-heart" name="<%= post._id %>"></i> <%= post.likedUsers.length %></button>
-        <%      break; %>
-        <%    }else if(i === post.likedUsers.length-1){ %>
-              <button class="btn btn-outline-danger author-button favourite like-button" type="submit" name=<%= post._id %>><i class="far fa-heart" name="<%= post._id %>"></i> <%= post.likedUsers.length %></button>
-        <%    }  %>
-        <%  }   %>
-      <%    }else{ %>
-            <button class="btn btn-outline-danger author-button favourite like-button" type="submit" name=<%= post._id %>><i class="far fa-heart" name="<%= post._id %>"></i> <%= post.likedUsers.length %></button>
-      <%    }  %>
-
-        </form>
-
-        <p style="margin-bottom:7px"><%= post.dateCreated %></p>
-        <h3 class="title"><%= post.title %></h3>
-        <p><%= post.content.substr(0,300)+"..." %> </p>
-        <a href="/readmore/<%=post._id%>">Read More</a>
-      </div>
-      <%  }                                    %>
-    <% }); %>
+<% users.forEach(function(user){ %>
+<%  if(user.username === post.author){ %>
+<div class="note">
+  <img class="article-profile" src="<%= user.imageURL %>" alt="">
+  <a class="profile-text-title" href="/userprofile/<%=post.author%>"><%=user.username%></a>
+  <%  if(post.likedUsers.length !=0){ %>
+  <%  for(let i=0; i<post.likedUsers.length; i++){ %>
+  <%    if(post.likedUsers[i].username === selfuser){ %>
+  <button class="btn btn-outline-danger author-button favourite like-button active" type="button" name=<%= post._id %>><i class="fas fa-heart" name="<%= post._id %>"> <%= post.likedUsers.length %></i></button>
+  <%      break; %>
+  <%    }else if(i === post.likedUsers.length-1){ %>
+  <button class="btn btn-outline-danger author-button favourite like-button" type="button" name=<%= post._id %>><i class="far fa-heart" name="<%= post._id %>"> <%= post.likedUsers.length %></i></button>
+  <%    }  %>
+  <%  }   %>
+  <%    }else{ %>
+  <button class="btn btn-outline-danger author-button favourite like-button" type="button" name=<%= post._id %>><i class="far fa-heart" name="<%= post._id %>"> <%= post.likedUsers.length %></i></button>
+  <%    }  %>
+  <p style="margin-bottom:7px"><%= post.dateCreated %></p>
+  <h3 class="title"><%= post.title %></h3>
+  <p><%= post.content.substr(0,300)+"..." %> </p>
+  <a href="/readmore/<%=post._id%>">Read More</a>
+</div>
+<%  }                                    %>
+<% }); %>
 <%   });    %>
 
 

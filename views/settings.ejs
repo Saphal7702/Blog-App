@@ -3,10 +3,10 @@
 <h1 class="compose-header">Edit Settings</h1>
 <form class="form-g" action="/settings" method="post">
   <div class="form-group">
-    <input class="form-control inp inp" type="text" name="imageURL" value= "<%= imageURL %>" placeholder="Image URL">
+    <input class="form-control inp inp" type="text" name="imageURL" value="<%= imageURL %>" placeholder="Image URL">
     <input class="form-control inp inp" type="text" value="<%= username %>" disabled>
     <textarea class="form-control inp" name="bio" rows="5" cols="30" placeholder="Edit Bio"><%= bio %></textarea>
-    <input class="form-control inp" type="text" name="email" value= "<%= email %>" placeholder="Change your Email">
+    <input class="form-control inp" type="text" name="email" value="<%= email %>" placeholder="Change your Email">
     <input class="form-control inp" type="password" name="oldpassword" value="" placeholder="Enter your old Password">
     <input class="form-control inp" type="password" name="newpassword" value="" placeholder="Enter your new Password">
   </div>

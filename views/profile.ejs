@@ -1,53 +1,45 @@
 <%- include("partials/header") %>
 
 <div class="user-profile">
-    <img class="profile-image" src="<%= user.imageURL %>" alt="">
-    <h1><%= user.username %></h1>
-    <p><%= user.bio %></p>
-    <a href="/settings" class="btn btn-outline-secondary profile-setting">Profile Settings</a>
+  <img class="profile-image" src="<%= user.imageURL %>" alt="">
+  <h1><%= user.username %></h1>
+  <p><%= user.bio %></p>
+  <a href="/settings" class="btn btn-outline-secondary profile-setting">Profile Settings</a>
 </div>
 
 <div class="user-body">
   <ul class="nav nav-pills">
-<li class="nav-item">
-<a class="nav-link" href="/profile">My Articles</a>
-</li>
-<li class="nav-item">
-<a class="nav-link" href="/likedarticles">Liked Articles</a>
-</li>
-</ul>
+    <li class="nav-item">
+      <a class="nav-link" href="/profile">My Articles</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="/likedarticles">Liked Articles</a>
+    </li>
+  </ul>
 </div>
 
-  <% posts.forEach(function(post){ %>
-      <div class="note">
-        <img class="article-profile" src="<%= user.imageURL %>" alt="">
-        <a class="profile-text-title" href="/userprofile/<%= post.author %>"><%=post.author%></a>
-
-        <form class="" action="/like" method="post">
-          <input type="text" name="like" style="display:none;" value="<%=post._id%>">
-          <input type="text" name="route" style="display:none;" value="profile">
-
-        <%  if(post.likedUsers.length !=0){ %>
-        <%  for(let i=0; i<post.likedUsers.length; i++){ %>
-        <%    if(post.likedUsers[i].username === user.username){ %>
-               <button class="btn btn-outline-danger author-button favourite like-button active" type="submit" name=<%= post._id %>><i class="fas fa-heart" name="<%= post._id %>"></i> <%= post.likedUsers.length %></button>
-        <%      break; %>
-        <%    }else if(i === post.likedUsers.length-1){ %>
-              <button class="btn btn-outline-danger author-button favourite like-button" type="submit" name=<%= post._id %>><i class="far fa-heart" name="<%= post._id %>"></i> <%= post.likedUsers.length %></button>
-        <%    }  %>
-        <%  }   %>
-      <%    }else{ %>
-            <button class="btn btn-outline-danger author-button favourite like-button" type="submit" name=<%= post._id %>><i class="far fa-heart" name="<%= post._id %>"></i> <%= post.likedUsers.length %></button>
-      <%    }  %>
-
-        </form>
-
-        <p style="margin-bottom:7px"><%= post.dateCreated %></p>
-        <h3 class="title"><%= post.title %></h3>
-        <p><%= post.content.substr(0,300)+"..." %> </p>
-        <a href="/readmore/<%=post._id%>">Read More</a>
-      </div>
-    <% }); %>
+<% posts.forEach(function(post){ %>
+<div class="note">
+  <img class="article-profile" src="<%= user.imageURL %>" alt="">
+  <a class="profile-text-title" href="/userprofile/<%= post.author %>"><%=post.author%></a>
+  <%  if(post.likedUsers.length !=0){ %>
+  <%  for(let i=0; i<post.likedUsers.length; i++){ %>
+  <%    if(post.likedUsers[i].username === user.username){ %>
+  <button class="btn btn-outline-danger author-button favourite like-button active" type="button" name=<%= post._id %>><i class="fas fa-heart" name="<%= post._id %>"> <%= post.likedUsers.length %></i></button>
+  <%      break; %>
+  <%    }else if(i === post.likedUsers.length-1){ %>
+  <button class="btn btn-outline-danger author-button favourite like-button" type="button" name=<%= post._id %>><i class="far fa-heart" name="<%= post._id %>"> <%= post.likedUsers.length %></i></button>
+  <%    }  %>
+  <%  }   %>
+  <%    }else{ %>
+  <button class="btn btn-outline-danger author-button favourite like-button" type="button" name=<%= post._id %>><i class="far fa-heart" name="<%= post._id %>"> <%= post.likedUsers.length %></i></button>
+  <%    }  %>
+  <p style="margin-bottom:7px"><%= post.dateCreated %></p>
+  <h3 class="title"><%= post.title %></h3>
+  <p><%= post.content.substr(0,300)+"..." %> </p>
+  <a href="/readmore/<%=post._id%>">Read More</a>
+</div>
+<% }); %>
 
 
 <%- include("partials/footer") %>
