@@ -21,7 +21,7 @@
   <%    }  %>
   <p style="margin-bottom:7px"><%= post.dateCreated %></p>
   <h3 class="title"><%= post.title %></h3>
-  <p><%= post.content.substr(0,300)+"..." %> </p>
+  <p><%= post.content.substr(0,500)+"..." %> </p>
   <a href="/readmore/<%=post._id%>">Read More</a>
 </div>
 <%  }                                    %>

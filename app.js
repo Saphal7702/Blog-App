@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require("express");
 const bodyParser = require("body-parser");
 const ejs = require("ejs");
@@ -5,6 +6,9 @@ const mongoose = require("mongoose");
 const session = require("express-session");
 const passport = require("passport");
 const passportLocalMongoose = require("passport-local-mongoose");
+const GoogleStrategy = require('passport-google-oauth20').Strategy;
+const findOrCreate = require('mongoose-findorcreate');
+
 
 const app = express();
 
@@ -15,7 +19,7 @@ app.use(bodyParser.urlencoded({
 }));
 
 app.use(session({
-  secret: "Our little secret.",
+  secret: process.env.SECRET,
   resave: false,
   saveUninitialized: false
 }));
@@ -28,7 +32,7 @@ var ensureAuthenticated = function(req, res, next) {
   else res.redirect('/login')
 }
 
-mongoose.connect("mongodb://localhost:27017/blogistDB", {
+mongoose.connect("mongodb+srv://saphal7702:"+process.env.DBPASS+"@cluster0.ngbyi.mongodb.net/blogistDB?retryWrites=true&w=majority", {
   useNewUrlParser: true
 });
 
@@ -49,14 +53,17 @@ const postSchema = {
   dateCreated: String,
   content: String,
   likedUsers: [],
-  tags: String
 }
 
 const Post = mongoose.model("Post", postSchema);
 
-const userSchema = new mongoose.Schema({});
+const userSchema = new mongoose.Schema({
+  username: String,
+  googleId: String
+});
 
 userSchema.plugin(passportLocalMongoose);
+userSchema.plugin(findOrCreate);
 
 const User = new mongoose.model("User", userSchema);
 
@@ -72,23 +79,53 @@ passport.deserializeUser(function(id, done) {
   });
 });
 
-// function findoneUser(userkey){
-//   return Userinfo.findOne({username: userkey}).exec().then(result => {let tem =result;}).then(user => {return user;});
-// }
+passport.use(new GoogleStrategy({
+    clientID: process.env.CLIENT_ID,
+    clientSecret: process.env.CLIENT_SECRET,
+    callbackURL: "http://localhost:3000/auth/google/home",
+    userProfileURL: "https://www.googleapis.com/oauth2/v3/userinfo"
+  },
+  function(accessToken, refreshToken, profile, cb) {
+    User.findOrCreate({ googleId: profile.id, username: profile.displayName }, function (err, user) {
 
-function findallUser() {
-  return Userinfo.find({}).exec().then(result => {
-    console.log(result);
-  }).then(user => {
-    return user;
+      Userinfo.findOne({
+        username: profile.displayName
+      }, function(err, foundUser) {
+        if (!foundUser) {
+          const userinfo = new Userinfo({
+            username: profile.displayName,
+            email: "",
+            imageURL: profile.photos[0].value,
+            bio: ""
+          });
+          userinfo.save();
+        }
+      });
+
+      return cb(err, user);
+    });
+  }
+));
+
+app.get("/auth/google",
+  passport.authenticate('google', { scope: ["profile"] })
+);
+
+app.get("/auth/google/home",
+  passport.authenticate('google', { failureRedirect: "/login" }),
+  function(req, res) {
+    res.redirect("/");
   });
-}
-
 
 app.get("/login", function(req, res) {
   res.render("login", {
-    Username: "User Name",
-    Password: "Password"
+    Message: "Please enter your login and password!"
+  });
+});
+
+app.get("/failedlogin", function(req, res) {
+  res.render("login", {
+    Message: "Invalid Username or Password!!"
   });
 });
 
@@ -103,8 +140,8 @@ app.post("/login", function(req, res) {
     if (err) {
       console.log(err);
     } else {
-      passport.authenticate("local")(req, res, function() {
-        res.redirect("/home");
+      passport.authenticate("local", {failureRedirect: '/failedlogin', failureMessage: true})(req, res, function() {
+        res.redirect("/");
       });
     }
   });
@@ -305,7 +342,6 @@ app.post("/compose", function(req, res) {
     title: req.body.title,
     dateCreated: getDate(),
     content: req.body.content,
-    tags: req.body.tags
   });
   post.save();
   res.redirect("/compose");
@@ -348,7 +384,7 @@ app.get("/deleteArticle/:postID", function(req, res) {
     _id: req.params.postID
   }, function(err) {
     if (!err) {
-      res.redirect("/home");
+      res.redirect("/");
     }
   });
 });
@@ -504,11 +540,15 @@ app.post("/settings", function(req, res) {
       }
     });
   }
-  res.redirect("/settings");
+  res.redirect("/profile");
 });
 
-app.get("/test", function(req, res) {
-  res.send("<h1>Test</h1>");
+app.post("/search", function(req, res){
+  Userinfo.find({username: {'$regex': req.body.search, $options:'i'}}, function(err, foundUsers){
+    if(!err){
+      res.render("search",{users: foundUsers});
+    }
+  });
 });
 
 app.listen(3000, function() {

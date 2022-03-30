@@ -1,0 +1,16 @@
+<%- include("partials/header") %>
+
+<% if(users.length != 0){ %>
+<%    users.forEach(function(user){   %>
+  <div class="note">
+    <img class="article-profile" src="<%= user.imageURL %>" alt="">
+    <a class="profile-text-title" href="/userprofile/<%=user.username%>"><%=user.username%></a>
+  </div>
+<%    });      %>
+<% }else{  %>
+  <div class="note">
+    <h1>No Author Found</h1>
+  </div>
+<%  }  %>
+
+<%- include("partials/footer") %>

@@ -1,16 +1,23 @@
-.title{
-  /* text-align: center; */
+.logo{
+  font-family: "Ubuntu";
+  font-size: 1.4rem;
+  font-weight: bold;
 }
 .nav-page{
-  margin-left: 75%;
+  margin-left: 40%;
 }
 .favourite{
   float: right;
 }
-/* .favourite:hover{
-  color: red;
-} */
+.search{
+  margin-left: 38%;
+}
 .space{
+  margin-top: 2px;
+  margin-bottom: 34px;
+}
+.spacepost{
+  margin-top: 1px;
   margin-bottom: 34px;
 }
 .no-link{
@@ -21,7 +28,12 @@
   color: black;
 }
 .feed-header{
+  font-family: "Montserrat";
+  font-size: 1.875rem;
+  font-weight: 900;
+  line-height: 2.25rem;
   text-align: center;
+  margin-top: 20px;
 }
 .note {
   background: #fff;
@@ -56,7 +68,6 @@
 .profile-image{
   width: 100px;
   height: 100px;
-  /* height: auto; */
   border-radius: 50%;
 }
 .profile-setting{
@@ -96,7 +107,7 @@
 .article-profile{
   border-radius: 50%;
   width: 50px;
-  height: auto;
+  height: 50px;
 }
 .author-button{
   margin-left: 10px;
