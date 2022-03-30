@@ -12,6 +12,9 @@
   },
   "author": "Saphal Karki",
   "license": "ISC",
+  "engines": {
+    "node": "16.14.0"
+  },
   "bugs": {
     "url": "https://github.com/Saphal7702/Blog-App/issues"
   },
